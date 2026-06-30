@@ -8,7 +8,7 @@ on:
 jobs:
   book-gb:
     runs-on: ubuntu-latest
-    timeout-minutes: 65     # 12 checks × 5 min + overhead
+    timeout-minutes: 5
 
     steps:
       - name: Checkout
@@ -31,20 +31,11 @@ jobs:
           playwright install chromium
           playwright install-deps chromium
 
-      # Run 12 times with 5-minute gaps = checks every 5 min for a full hour
-      - name: Run auto-booker every 5 minutes (12x)
+      - name: Run auto-booker
         env:
           ALDI_RUFNUMMER: ${{ secrets.ALDI_RUFNUMMER }}
           ALDI_PASSWORD: ${{ secrets.ALDI_PASSWORD }}
-        run: |
-          for i in {1..12}; do
-            echo "=== Check $i/12 ==="
-            python main.py || echo "Check $i failed, continuing..."
-            if [ $i -lt 12 ]; then
-              echo "Waiting 5 minutes until next check..."
-              sleep 300
-            fi
-          done
+        run: python main.py
 
       - name: Upload screenshots
         if: always()
