@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Aldi Talk Auto-Booker
 """
 Aldi Talk Auto +1 GB Booker
 Logs into the Aldi Talk portal and clicks the +1 GB button.
