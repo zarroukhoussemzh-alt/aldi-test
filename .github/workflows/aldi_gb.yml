@@ -1,0 +1,48 @@
+name: Aldi Talk +1 GB Auto-Booker
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'    # Every 5 minutes
+  workflow_dispatch:           # Also allows manual runs from GitHub UI
+
+jobs:
+  book-gb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Cache Playwright browser so installs are fast (~30s instead of ~2min)
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ runner.os }}-v1
+
+      - name: Install Playwright
+        run: |
+          pip install playwright --quiet
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Run auto-booker
+        env:
+          ALDI_RUFNUMMER: ${{ secrets.ALDI_RUFNUMMER }}
+          ALDI_PASSWORD: ${{ secrets.ALDI_PASSWORD }}
+        run: python main.py
+
+      # Upload error screenshot if the run fails
+      - name: Upload error screenshot
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: error-screenshot
+          path: error.png
+          if-no-files-found: ignore
