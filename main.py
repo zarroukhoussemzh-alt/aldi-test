@@ -16,8 +16,8 @@ from datetime import datetime
 from playwright.async_api import async_playwright, TimeoutError as PWTimeout
 
 
-RUFNUMMER = os.environ.get("ALDI_RUFNUMMER", "017656874563")
-PASSWORD  = os.environ.get("ALDI_PASSWORD", "Na240271!!??")
+RUFNUMMER = os.environ.get("ALDI_RUFNUMMER", "")
+PASSWORD  = os.environ.get("ALDI_PASSWORD", "")
 
 LOGIN_URL     = "https://www.alditalk-kundenportal.de/"
 UEBERSICHT_URL = "https://www.alditalk-kundenportal.de/portal/auth/uebersicht/"
